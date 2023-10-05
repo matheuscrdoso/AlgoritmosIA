@@ -1,0 +1,52 @@
+def bidirectional_search(graph, start, goal):
+    # Inicializa os conjuntos de visitados para a busca da frente e da trás
+    visited_front = set()
+    visited_back = set()
+
+    # Inicializa as fronteiras para a busca da frente e da trás
+    frontier_front = [start]
+    frontier_back = [goal]
+
+    while frontier_front and frontier_back:
+        # Realiza uma etapa de busca da frente
+        current_front = frontier_front.pop(0)
+        visited_front.add(current_front)
+
+        if current_front in visited_back:
+            return "Encontrado"  # Caminho encontrado
+
+        for neighbor in graph[current_front]:
+            if neighbor not in visited_front:
+                frontier_front.append(neighbor)
+
+        # Realiza uma etapa de busca da trás
+        current_back = frontier_back.pop(0)
+        visited_back.add(current_back)
+
+        if current_back in visited_front:
+            return "Encontrado"  # Caminho encontrado
+
+        for neighbor in graph[current_back]:
+            if neighbor not in visited_back:
+                frontier_back.append(neighbor)
+
+    return "Não encontrado"  # Caminho não encontrado
+
+# Exemplo de uso
+graph = {
+    0: [1, 2],
+    1: [0, 3, 4],
+    2: [0, 5],
+    3: [1],
+    4: [1, 6],
+    5: [2],
+    6: [4, 7],
+    7: [6]
+}
+
+start = 0
+goal = 7
+
+result = bidirectional_search(graph, start, goal)
+
+print(result)
