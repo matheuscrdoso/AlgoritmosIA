@@ -1,0 +1,60 @@
+import heapq
+
+class Graph:
+    def __init__(self):
+        self.graph = {}  # Inicializa um dicionário vazio para representar o grafo.
+
+    def add_edge(self, u, v, weight):
+        # Adiciona uma aresta (u, v) ao grafo com um peso associado.
+        # Se o vértice u não existe no grafo, cria uma entrada para ele com uma lista vazia.
+        # Em seguida, adiciona o vértice v e o peso à lista de vizinhos do vértice u.
+        if u not in self.graph:
+            self.graph[u] = []
+        self.graph[u].append((v, weight))
+
+    def ucs(self, start, goal):
+        # Inicializa a fila de prioridade (heap) com o nó inicial e seu custo zero
+        priority_queue = [(0, start)]
+        visited = set()  # Inicializa um conjunto vazio para rastrear os vértices visitados.
+
+        while priority_queue:
+            # Remove o nó com menor custo da fila de prioridade
+            cost, current_node = heapq.heappop(priority_queue)
+
+            # Verifica se alcançamos o nó objetivo
+            if current_node == goal:
+                print("Custo mínimo para alcançar o objetivo:", cost)
+                return
+
+            # Se o nó já foi visitado, ignoramos
+            if current_node in visited:
+                continue
+
+            # Marca o nó como visitado
+            visited.add(current_node)
+
+            # Explora os vizinhos do nó atual
+            for neighbor, neighbor_cost in self.graph.get(current_node, []):
+                if neighbor not in visited:
+                    # Adiciona o vizinho à fila de prioridade com o custo acumulado
+                    heapq.heappush(priority_queue, (cost + neighbor_cost, neighbor))
+
+        print("Não foi possível alcançar o objetivo.")
+
+# Exemplo de uso
+if __name__ == "__main__":
+    graph = Graph()  # Cria uma instância da classe Graph.
+
+    # Adiciona arestas ao grafo com seus respectivos pesos.
+    graph.add_edge('A', 'B', 1)
+    graph.add_edge('A', 'C', 5)
+    graph.add_edge('B', 'D', 3)
+    graph.add_edge('C', 'E', 2)
+    graph.add_edge('D', 'F', 1)
+    graph.add_edge('E', 'F', 4)
+
+    start_node = 'A'
+    goal_node = 'F'
+
+    print(f"Busca de custo uniforme de {start_node} para {goal_node}:")
+    graph.ucs(start_node, goal_node)  # Chama a função UCS para encontrar o caminho de custo mínimo.
