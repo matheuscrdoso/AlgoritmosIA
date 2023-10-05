@@ -1,0 +1,52 @@
+# Busca gulosa de melhor escolha
+
+
+# Classe para representar um nó no grafo
+class Node:
+    def __init__(self, name, heuristic_cost):
+        self.name = name  # Nome do nó
+        self.heuristic_cost = heuristic_cost  # Heurística (custo estimado até o objetivo)
+        self.adjacent_nodes = {}  # Dicionário de nós vizinhos com custos associados
+
+    def add_edge(self, node, cost):
+        self.adjacent_nodes[node] = cost
+
+# Função para a Busca Gulosa de Melhor Escolha
+def greedy_best_first_search(start_node, goal_node):
+    visited = set()  # Conjunto de nós já visitados
+    current_node = start_node
+
+    while current_node != goal_node:
+        visited.add(current_node)
+        next_node = None
+        min_cost = float('inf')  # Inicializa com um valor infinito
+
+        for neighbor, cost in current_node.adjacent_nodes.items():
+            if neighbor not in visited and cost < min_cost:
+                next_node = neighbor
+                min_cost = cost
+
+        if next_node is None:
+            print("Não foi possível encontrar um caminho até o objetivo.")
+            return None
+
+        print(f"Ir de {current_node.name} para {next_node.name}")
+        current_node = next_node
+
+    print(f"Chegou ao objetivo: {current_node.name}")
+
+# Exemplo de uso:
+# Criando os nós e definindo as conexões e heurísticas
+node_a = Node("A", 10)
+node_b = Node("B", 5)
+node_c = Node("C", 12)
+node_d = Node("D", 4)
+
+node_a.add_edge(node_b, 3)
+node_a.add_edge(node_c, 8)
+node_b.add_edge(node_d, 2)
+node_c.add_edge(node_d, 7)
+
+# Executando a Busca Gulosa de Melhor Escolha
+print("Iniciando a Busca Gulosa de Melhor Escolha:")
+greedy_best_first_search(node_a, node_d)
