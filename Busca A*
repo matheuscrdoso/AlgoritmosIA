@@ -1,0 +1,89 @@
+import heapq
+
+
+class No:
+
+  def _init_(self, cidade, pai=None, custo_g=0):
+    self.cidade = cidade
+    self.pai = pai
+    self.custo_g = custo_g
+
+  def _lt_(self, outro):
+    return self.custo_g < outro.custo_g
+
+
+def funcao_heuristica(cidade_atual, cidade_destino):
+  # Implemente a função heurística adequada para o seu problema.
+  # Neste exemplo, a heurística pode ser a distância em linha reta (euclidiana) entre as coordenadas das cidades.
+  coordenadas = {
+      'A': (0, 0),
+      'B': (3, 1),
+      'C': (1, 3),
+      'D': (4, 4),
+      'E': (2, 5)
+  }
+  x1, y1 = coordenadas[cidade_atual]
+  x2, y2 = coordenadas[cidade_destino]
+  distancia = ((x1 - x2)**2 + (y1 - y2)**2)**0.5
+  return distancia
+
+
+def a_star(cidade_inicial, cidade_destino, grafo):
+  no_inicial = No(cidade_inicial)
+  lista_aberta = []
+  heapq.heappush(lista_aberta, no_inicial)
+  visitados = set()
+
+  while lista_aberta:
+    no_atual = heapq.heappop(lista_aberta)
+
+    if no_atual.cidade == cidade_destino:
+      caminho = reconstruir_caminho(no_atual)
+      return caminho
+
+    if no_atual.cidade in visitados:
+      continue
+
+    visitados.add(no_atual.cidade)
+
+    for cidade_vizinha, distancia in grafo[no_atual.cidade]:
+      custo_g = no_atual.custo_g + distancia
+      custo_h = funcao_heuristica(cidade_vizinha, cidade_destino)
+      custo_f = custo_g + custo_h
+
+      no_vizinho = No(cidade_vizinha, no_atual, custo_g)
+
+      heapq.heappush(lista_aberta, no_vizinho)
+
+  return None
+
+
+def reconstruir_caminho(no):
+  caminho = []
+  while no:
+    caminho.insert(0, no.cidade)
+    no = no.pai
+  return caminho
+
+
+# Defina o grafo das cidades e as distâncias entre elas.
+grafo = {
+    'A': [('B', 10), ('C', 15)],
+    'B': [('A', 10), ('D', 12)],
+    'C': [('A', 15), ('D', 5)],
+    'D': [('B', 12), ('C', 5), ('E', 10)],
+    'E': [('D', 10)]
+}
+
+# Cidades inicial e destino.
+cidade_inicial = 'A'
+cidade_destino = 'E'
+
+# Execute o algoritmo A*.
+caminho = a_star(cidade_inicial, cidade_destino, grafo)
+
+# Exibe o caminho da solução, se encontrado.
+if caminho:
+  print("Caminho encontrado:", caminho)
+else:
+  print("Caminho não encontrado.")
