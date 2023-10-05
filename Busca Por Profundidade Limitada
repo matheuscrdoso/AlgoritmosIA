@@ -1,0 +1,84 @@
+def depth_limited_search(node, goal, depth_limit):
+        # Verifica se o nó atual é o objetivo que estamos buscando.
+
+    if node == goal:
+        return True
+        # Se a profundidade limite foi alcançada, retornamos False.
+
+    elif depth_limit == 0:
+        return False
+    else:
+                # Iteramos sobre os filhos do nó atual (obtidos pela função get_children).
+
+        for child in get_children(node):
+                # Chamamos recursivamente a função para o filho atual, com profundidade reduzida.
+
+            if depth_limited_search(child, goal, depth_limit - 1):
+                # Se encontrarmos o objetivo, retornamos True.
+
+                return True
+                # Se nenhum filho atingir o objetivo, retornamos False.
+
+        return False
+
+def get_children(node):
+    # aqui é representado um labirinto como uma matriz onde 1 é uma parede e 0 é um caminho livre.
+    # As posições adjacentes serão cima, baixo, esquerda e direita.
+
+    # As coordenadas (x, y) representam a posição atual no labirinto.
+    x, y = node
+
+    # Lista de movimentos possíveis (cima, baixo, esquerda, direita)
+    movements = [(0, -1), (0, 1), (-1, 0), (1, 0)]
+
+    children = []
+
+    for dx, dy in movements:
+        new_x, new_y = x + dx, y + dy
+
+        # Verifica se a nova posição está dentro dos limites do labirinto
+        if 0 <= new_x < len(maze) and 0 <= new_y < len(maze[0]) and maze[new_x][new_y] == 0:
+            children.append((new_x, new_y))
+
+    return children
+
+# Exemplo de uso
+maze = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0]
+]
+
+start_node = (0, 0)
+goal_node = (4, 4)
+
+result = depth_limited_search(start_node, goal_node, 10)
+
+if result:
+    print("O objetivo foi alcançado!")
+else:
+    print("O objetivo não foi alcançado dentro da profundidade máxima.")
+    
+    
+    
+    
+    
+#                                    EXPLICAÇÃO DETALHADA:
+# def depth_limited_search(node, goal, depth_limit):: Esta é a declaração de uma função chamada depth_limited_search que aceita três argumentos: node (o nó atual), goal (o objetivo que estamos tentando alcançar) e depth_limit (a profundidade máxima que estamos dispostos a explorar).
+
+# if node == goal:: Verifica se o nó atual é o objetivo que estamos buscando. Se for o caso, a função retorna True, indicando que o objetivo foi alcançado.
+
+# elif depth_limit == 0:: Verifica se a profundidade limite foi atingida. Se depth_limit for igual a zero, isso significa que atingimos a profundidade máxima permitida e não podemos explorar mais profundamente. Neste caso, a função retorna False.
+
+# else:: Se não atingirmos nenhum dos casos acima, isso significa que ainda podemos explorar mais. Entramos em um loop para iterar sobre os filhos do nó atual.
+
+# for child in get_children(node):: Iteramos sobre os filhos do nó atual. A função get_children(node) é chamada para obter uma lista de filhos.
+
+# if depth_limited_search(child, goal, depth_limit - 1):: Chamamos recursivamente a função depth_limited_search para o filho atual (child). A profundidade limite é reduzida em 1.
+
+# return True: Se a chamada recursiva retornar True, significa que o objetivo foi alcançado em algum ponto na subárvore. Neste caso, retornamos True para indicar que encontramos o objetivo.
+
+# return False: Se nenhum dos filhos leva ao objetivo, a função retorna False indicando que não encontrou o objetivo nesta subárvore. 
+
