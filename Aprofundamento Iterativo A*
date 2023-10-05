@@ -1,0 +1,98 @@
+class No:
+  def __init__(self, estado, pai=None, custo=0, profundidade=0):
+    self.estado = estado
+    self.pai = pai
+    self.custo = custo
+    self.profundidade = profundidade
+
+# Função heurística para estimar o custo para chegar do estado atual ao estado objetivo.
+def funcao_heuristica(estado_atual, estado_objetivo):
+  h = 0
+
+  for i in range(3):
+    for j in range(3):
+      if estado_atual[i][j] != estado_objetivo[i][j] and estado_atual[i][j] != 0:
+        # Incrementa a heurística apenas para peças fora do lugar, excluindo o espaço vazio (0).
+        h += 1
+
+  return h
+
+# Gera ações e estados filhos a partir de um estado dado.
+def gerar_acoes_e_estados_filhos(estado):
+  acoes = []  # Lista para armazenar as ações disponíveis.
+  estados_filhos = []  # Lista para armazenar os estados filhos correspondentes às ações.
+
+  # Encontra a posição do espaço vazio (0).
+  for i in range(3):
+    for j in range(3):
+      if estado[i][j] == 0:
+        x, y = i, j
+
+  # Possíveis movimentos: cima, baixo, esquerda, direita.
+  movimentos = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+  for dx, dy in movimentos:
+    novo_x, novo_y = x + dx, y + dy
+
+    if 0 <= novo_x < 3 and 0 <= novo_y < 3:
+      # Cria uma cópia do estado atual.
+      novo_estado = [list(row) for row in estado]
+
+      # Move a peça para o espaço vazio.
+      novo_estado[x][y], novo_estado[novo_x][novo_y] = novo_estado[novo_x][novo_y], novo_estado[x][y]
+
+      acao = (dx, dy)  # Armazena a ação.
+      estados_filhos.append((acao, novo_estado))  # Armazena a ação e o novo estado.
+
+  return estados_filhos
+
+# Algoritmo A* para encontrar o caminho da configuração inicial até a configuração objetivo.
+def a_star(estado_inicial, estado_objetivo):
+  no_inicial = No(estado_inicial)
+  lista_aberta = [no_inicial]
+  lista_fechada = set()
+
+  while lista_aberta:
+    no_atual = min(
+        lista_aberta,
+        key=lambda x: x.custo + funcao_heuristica(x.estado, estado_objetivo))
+
+    if no_atual.estado == estado_objetivo:
+      caminho = []
+      while no_atual:
+        caminho.append(no_atual.estado)
+        no_atual = no_atual.pai
+      return caminho[::-1]  # Retorna o caminho reverso.
+
+    lista_aberta.remove(no_atual)
+    lista_fechada.add(tuple(map(tuple, no_atual.estado)))
+
+    for acao, estado_filho in gerar_acoes_e_estados_filhos(no_atual.estado):
+      if tuple(map(tuple, estado_filho)) in lista_fechada:
+        continue
+
+      custo_acao = no_atual.custo + 1  # Custo de cada ação é 1.
+
+      no_filho = No(estado_filho, no_atual, custo_acao, no_atual.profundidade + 1)
+
+      if no_filho not in lista_aberta:
+        lista_aberta.append(no_filho)
+
+  return None
+
+# Estados inicial e objetivo.
+estado_inicial = ((2, 8, 3), (1, 6, 4), (7, 0, 5))
+estado_objetivo = ((1, 2, 3), (8, 0, 4), (7, 6, 5))
+
+# Executa o algoritmo A*.
+caminho = a_star(estado_inicial, estado_objetivo)
+
+# Exibe o caminho da solução, se encontrado.
+if caminho:
+  print("Solução encontrada:")
+  for estado in caminho:
+    for linha in estado:
+      print(linha)
+    print()
+else:
+  print("Solução não encontrada.")
