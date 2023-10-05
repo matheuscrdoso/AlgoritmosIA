@@ -1,0 +1,38 @@
+class Graph:
+    def __init__(self):
+        self.graph = {}  # Inicializa um dicionário vazio para representar o grafo.
+
+    # Adiciona uma aresta (u, v) ao grafo.
+    def add_edge(self, u, v):
+        # Se o vértice u não existe no grafo, cria uma entrada para ele com uma lista vazia.
+        if u not in self.graph:
+            self.graph[u] = []
+        # Em seguida, adiciona o vértice v à lista de vizinhos do vértice u.
+        self.graph[u].append(v)
+
+    def dfs(self, start_vertex, visited=None):
+        if visited is None:
+            visited = set()  # Inicializa um conjunto vazio para rastrear os vértices visitados.
+
+        visited.add(start_vertex)  # Marca o vértice atual como visitado.
+        print(f'Visitando vértice {start_vertex}')
+
+        # Itera sobre os vizinhos do vértice atual e chama recursivamente a função dfs para eles.
+        for neighbor in self.graph.get(start_vertex, []):
+            if neighbor not in visited:
+                self.dfs(neighbor, visited)
+
+# Exemplo de uso
+if __name__ == "__main__":
+    graph = Graph()  # Cria uma instância da classe Graph.
+
+    # Adiciona arestas ao grafo.
+    graph.add_edge(0, 1)
+    graph.add_edge(0, 2)
+    graph.add_edge(1, 3)
+    graph.add_edge(2, 4)
+
+    start_vertex = 0  # Define o vértice inicial para a busca em profundidade.
+
+    print("Busca em profundidade começando do vértice 0:")
+    graph.dfs(start_vertex)  # Chama a função de busca em profundidade a partir do vértice inicial.
