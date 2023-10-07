@@ -1,38 +1,38 @@
-def knapsack_recursive(values, weights, capacity, current_index):
-    # Critério de parada: índice atual ultrapassou o número de itens
-    if current_index >= len(values) or capacity <= 0:
+def mochila_recursiva(valores, pesos, capacidade, indice_atual):
+    # Critério de parada: o índice atual ultrapassou o número de itens
+    if indice_atual >= len(valores) or capacidade <= 0:
         return 0, []
 
     # Caso 1: Não incluir o item atual na mochila
-    without_item_value, without_item_items = knapsack_recursive(
-        values, weights, capacity, current_index + 1
+    sem_item_valor, sem_item_itens = mochila_recursiva(
+        valores, pesos, capacidade, indice_atual + 1
     )
 
     # Caso 2: Incluir o item atual na mochila
-    if weights[current_index] <= capacity:
-        with_item_value, with_item_items = knapsack_recursive(
-            values,
-            weights,
-            capacity - weights[current_index],
-            current_index + 1
+    if pesos[indice_atual] <= capacidade:
+        com_item_valor, com_item_itens = mochila_recursiva(
+            valores,
+            pesos,
+            capacidade - pesos[indice_atual],
+            indice_atual + 1
         )
-        with_item_value += values[current_index]
-        with_item_items = [current_index] + with_item_items  # Adiciona o índice do item
+        com_item_valor += valores[indice_atual]
+        com_item_itens = [indice_atual] + com_item_itens  # Adiciona o índice do item
 
         # Retorna a melhor escolha entre os casos 1 e 2
-        if with_item_value > without_item_value:
-            return with_item_value, with_item_items
+        if com_item_valor > sem_item_valor:
+            return com_item_valor, com_item_itens
         else:
-            return without_item_value, without_item_items
+            return sem_item_valor, sem_item_itens
 
-    return without_item_value, without_item_items  # Retorna caso 1 se não for possível incluir o item
+    return sem_item_valor, sem_item_itens  # Retorna caso 1 se não for possível incluir o item
 
 # Exemplo de uso
-values = [60, 100, 120]
-weights = [10, 20, 30]
-capacity = 50
+valores = [60, 100, 120]
+pesos = [10, 20, 30]
+capacidade = 50
 
-max_value, selected_items = knapsack_recursive(values, weights, capacity, 0)
+valor_maximo, itens_selecionados = mochila_recursiva(valores, pesos, capacidade, 0)
 
-print("Valor máximo que pode ser colocado na mochila:", max_value)
-print("Índices dos itens selecionados:", selected_items)
+print("Valor máximo que pode ser colocado na mochila:", valor_maximo)
+print("Índices dos itens selecionados:", itens_selecionados)
