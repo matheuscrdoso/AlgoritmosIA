@@ -1,0 +1,37 @@
+import math
+import random
+
+def funcao_objetivo(x, y):
+    return -(x ** 2 + y ** 2)  # Função a ser maximizada (- para maximizar)
+
+def tempera_simulada(espaco_busca, funcao_objetivo, temperatura_inicial=1000.0, taxa_resfriamento=0.995, iteracoes_max=1000):
+    melhor_solucao = random.choice(espaco_busca)  # Inicializa uma solução aleatória
+    melhor_valor = funcao_objetivo(*melhor_solucao)
+
+    temperatura_atual = temperatura_inicial
+
+    for i in range(iteracoes_max):
+        vizinho = (
+            melhor_solucao[0] + random.uniform(-1, 1),
+            melhor_solucao[1] + random.uniform(-1, 1)
+        )
+
+        valor_vizinho = funcao_objetivo(*vizinho)
+
+        # Se o vizinho é melhor ou com uma certa probabilidade, aceita o vizinho
+        if valor_vizinho > melhor_valor or random.random() < math.exp((valor_vizinho - melhor_valor) / temperatura_atual):
+            melhor_solucao = vizinho
+            melhor_valor = valor_vizinho
+
+        # Reduz a temperatura
+        temperatura_atual *= taxa_resfriamento
+
+    return melhor_solucao, melhor_valor
+
+# Espaço de busca: pares de valores possíveis para (x, y)
+espaco_busca = [(i / 10.0, j / 10.0) for i in range(-100, 101) for j in range(-100, 101)]
+
+# Executa a tempera simulada
+melhor_solucao, melhor_valor = tempera_simulada(espaco_busca, funcao_objetivo)
+print("Melhor solução encontrada:", melhor_solucao)
+print("Valor da função objetivo para a melhor solução:", melhor_valor)
