@@ -1,0 +1,31 @@
+import random
+
+def funcao_objetivo(x):
+    # Função de exemplo (pode ser substituída por qualquer função que queira otimizar)
+    return -x**2  # Maximizar -x^2 é equivalente a minimizar x^2 (ponto mais baixo)
+
+def busca_subida_encosta(espaco_busca, funcao_objetivo, iteracoes_max=100):
+    # Inicializa uma solução aleatória
+    solucao_atual = random.choice(espaco_busca)
+
+    for i in range(iteracoes_max):
+        vizinhos = [solucao_atual - 0.1, solucao_atual + 0.1]  # Vizinhos próximos
+
+        # Escolhe o vizinho com o maior valor na função objetivo
+        melhor_vizinho = max(vizinhos, key=funcao_objetivo)
+
+        # Se não houver melhora, interrompe a busca
+        if funcao_objetivo(melhor_vizinho) <= funcao_objetivo(solucao_atual):
+            break
+
+        solucao_atual = melhor_vizinho
+
+    return solucao_atual
+
+# Espaço de busca: valores possíveis para a variável
+espaco_busca = [i / 10.0 for i in range(-100, 101)]
+
+# Executa a busca de subida de encosta
+melhor_solucao = busca_subida_encosta(espaco_busca, funcao_objetivo)
+print("Melhor solução encontrada:", melhor_solucao)
+print("Valor da função objetivo para a melhor solução:", funcao_objetivo(melhor_solucao))
